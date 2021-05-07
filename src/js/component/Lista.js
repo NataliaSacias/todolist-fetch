@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Lista = () => {
 	const [tarea, setTarea] = useState();
@@ -6,25 +6,68 @@ const Lista = () => {
 
 	const confirmarTarea = e => {
 		e.preventDefault();
-		setListaTareas([...listaTareas, { label: tarea, done: false }]);
-		setTarea("");
+		if (tarea) {
+			setListaTareas([...listaTareas, { label: tarea, done: false }]);
+			setTarea("");
+			updateListaTarea([...listaTareas, { label: tarea, done: false }]);
+		}
 	};
+
+	const updateListaTarea = toDos => {
+		fetch(
+			"https://assets.breatheco.de/apis/fake/todos/user/NataliaSacias",
+			{
+				method: "PUT",
+				body: JSON.stringify(toDos),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}
+		)
+			.then(resp => {
+				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+			})
+			.then(data => {
+				//Aquí es donde debe comenzar tu código después de que finalice la búsqueda
+				console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
+
+	const getData = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/NataliaSacias")
+			.then(resp => {
+				return resp.json();
+			})
+			.then(data => {
+				console.log(data);
+				setListaTareas(data);
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
+
+	useEffect(() => {
+		getData();
+	}, []);
 
 	const eliminarTarea = indice => {
 		let tareasEliminadas = listaTareas.filter((task, index) => {
 			if (indice != index) return task;
 		});
 		setListaTareas(tareasEliminadas);
+		updateListaTarea(tareasEliminadas);
 	};
 
 	return (
-		<div>
+		<div className="container">
+			<h1>Todo list</h1>
 			<form onSubmit={confirmarTarea}>
-				<div className="form-row align-items-center">
+				<div className="form-row d-flex align-items-center">
 					<div className="col-auto">
-						{/* <label className="sr-only" htmlFor="inlineFormInput">
-							Name
-						</label> */}
 						<input
 							type="text"
 							className="form-control mb-2"
@@ -45,7 +88,9 @@ const Lista = () => {
 			<div className="lista">
 				{listaTareas.map((obj, i) => {
 					return (
-						<li key={i}>
+						<li
+							className="list-group-item d-flex justify-content-between"
+							key={i}>
 							{obj.label}
 							<button
 								onClick={() => {
@@ -60,11 +105,11 @@ const Lista = () => {
 				})}
 			</div>
 			<div>
-				<h6>
+				<p>
 					{listaTareas.length == 0
 						? "no hay tareas"
-						: `hay ${listaTareas.length} tareas`}
-				</h6>
+						: `Hay ${listaTareas.length} tareas pendientes`}
+				</p>
 			</div>
 		</div>
 	);
