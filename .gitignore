@@ -52,6 +52,7 @@ Thumbs.db
 
 # ignore node/grunt dependency directories
 node_modules/
+src/js/component/borrador.js
 
 # ignore the dist directory were our bundle files are going to be
 public/*
@@ -64,3 +65,4 @@ dist/*
 !.htaccess
 !.eslintrc
 .now
+
