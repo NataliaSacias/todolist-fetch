@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import BotonPapelera from "./BotonPapelera";
 
 const Lista = () => {
 	const [tarea, setTarea] = useState();
@@ -28,8 +29,7 @@ const Lista = () => {
 				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
 			})
 			.then(data => {
-				//Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-				console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+				console.log(data);
 			})
 			.catch(error => {
 				console.log(error);
@@ -42,7 +42,6 @@ const Lista = () => {
 				return resp.json();
 			})
 			.then(data => {
-				console.log(data);
 				setListaTareas(data);
 			})
 			.catch(error => {
@@ -92,14 +91,7 @@ const Lista = () => {
 							className="list-group-item d-flex justify-content-between"
 							key={i}>
 							{obj.label}
-							<button
-								onClick={() => {
-									eliminarTarea(i);
-								}}
-								type="button"
-								className="btn btn-outline-danger">
-								<i className="fas fa-trash-alt"></i>
-							</button>
+							<BotonPapelera />
 						</li>
 					);
 				})}
